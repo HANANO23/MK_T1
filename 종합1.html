@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>매경TEST 시사용어 50문항 CBT 퀴즈</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-sub: #64748b;
+      --border-color: #e2e8f0;
+      --correct-bg: #dcfce7;
+      --correct-border: #22c55e;
+      --correct-text: #14532d;
+      --wrong-bg: #fee2e2;
+      --wrong-border: #ef4444;
+      --wrong-text: #7f1d1d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 20px;
+      line-height: 1.5;
+    }
+
+    .app-header {
+      max-width: 1200px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .app-header h1 {
+      font-size: 1.35rem;
+      color: var(--text-main);
+    }
+
+    .header-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-action:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+    }
+
+    .btn-danger:hover {
+      background-color: #dc2626;
+    }
+
+    .btn-secondary {
+      background-color: #475569;
+    }
+
+    .btn-secondary:hover {
+      background-color: #334155;
+    }
+
+    .cbt-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+    }
+
+    @media (max-width: 868px) {
+      .cbt-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .question-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      min-height: 580px;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .category-badge {
+      background-color: #eff6ff;
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .mode-badge {
+      background-color: #fef2f2;
+      color: #ef4444;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .progress-text {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    .question-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      word-break: keep-all;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: #fff;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      word-break: keep-all;
+    }
+
+    .option-btn:hover:not(.correct):not(.wrong) {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .option-btn.correct {
+      background-color: var(--correct-bg);
+      border-color: var(--correct-border);
+      color: var(--correct-text);
+      font-weight: 600;
+    }
+
+    .option-btn.wrong {
+      background-color: var(--wrong-bg);
+      border-color: var(--wrong-border);
+      color: var(--wrong-text);
+    }
+
+    .explanation-box {
+      margin-top: 10px;
+      padding: 16px;
+      background-color: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      white-space: pre-line;
+      line-height: 1.6;
+      color: #0c4a6e;
+      font-size: 0.92rem;
+    }
+
+    .navigation-bar {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      padding: 10px 20px;
+      border: 1px solid var(--border-color);
+      background-color: #fff;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background-color: #f1f5f9;
+    }
+
+    .keyboard-tip {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      align-self: center;
+    }
+
+    .sidebar-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      height: fit-content;
+    }
+
+    .omr-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .score-summary {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .omr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+      max-height: 550px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .omr-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      background-color: #fff;
+      transition: all 0.15s;
+    }
+
+    .omr-item:hover {
+      border-color: var(--primary);
+    }
+
+    .omr-item.active {
+      border-color: var(--primary);
+      background-color: #eff6ff;
+      font-weight: 600;
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .status-none { background: #f1f5f9; color: var(--text-sub); }
+    .status-correct { background: var(--correct-bg); color: var(--correct-text); font-weight: 600; }
+    .status-wrong { background: var(--wrong-bg); color: var(--wrong-text); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="app-header">
+    <h1>📝 매경TEST 핵심 시사용어 50문항 CBT 퀴즈</h1>
+    <div class="header-btns">
+      <button id="wrongOnlyBtn" class="btn-action btn-danger" onclick="filterWrongQuestions()">틀린 문제만 모아보기</button>
+      <button id="showAllBtn" class="btn-action btn-secondary" onclick="showAllQuestions()" style="display:none;">전체 문제 보기</button>
+      <button class="btn-action" onclick="resetAndShuffle()">리셋 & 순서 섞기</button>
+    </div>
+  </div>
+
+  <div class="cbt-container">
+    <main class="question-card">
+      <div class="question-header">
+        <div>
+          <span id="categoryBadge" class="category-badge">경영/인사</span>
+          <span id="modeBadge" class="mode-badge">오답 복습 모드</span>
+        </div>
+        <span class="progress-text"><strong id="currentIndex">1</strong> / <span id="totalIndex">50</span></span>
+      </div>
+
+      <div id="questionTitle" class="question-title"></div>
+
+      <div id="optionsList" class="options-list"></div>
+
+      <div id="explanationBox" class="explanation-box" style="display: none;"></div>
+
+      <div class="navigation-bar">
+        <button id="prevBtn" class="nav-btn" onclick="prevQuestion()">◀ 이전 문제</button>
+        <span class="keyboard-tip">💡 [Spacebar] 누르면 다음 문제로 이동</span>
+        <button id="nextBtn" class="nav-btn" onclick="nextQuestion()">다음 문제 ▶</button>
+      </div>
+    </main>
+
+    <aside class="sidebar-card">
+      <div class="omr-header">
+        <h3>OMR 답안지</h3>
+        <span id="scoreSummary" class="score-summary">맞힘: 0 / 50</span>
+      </div>
+      <div id="omrGrid" class="omr-grid"></div>
+    </aside>
+  </div>
+
+  <script>
+    const originalQuestions = [
+      {
+        id: 1,
+        category: "Part 1. 경영·인사",
+        question: "[문제 01] 다음은 (주)한국제조 인사팀의 조직 개편 및 임금체계 개편안 회의록 일부이다. 괄호 (A)에 들어갈 가장 적절한 임금체계 용어는?\n\n[인사팀 회의록]\n팀장: \"기존의 ( A ) 방식은 근속연수와 나이가 올라감에 따라 임금이 자동 인상되어 장기근속 유도와 고용 안정성 확보에는 효과적이었으나, 성과 창출 동기를 저하시키고 호봉 상승에 따른 인건비 부담을 과도하게 가중시키는 한계가 있었습니다.\"\n수석: \"맞습니다. 따라서 직무의 가치와 난이도를 평가해 지급하는 직무급이나 개인의 능력·성과를 반영하는 성과급 형태로의 체계 개편이 시급합니다.\"",
+        options: ["① 성과급", "② 연공급", "③ 직무급", "④ 능무급", "⑤ 연봉제"],
+        answer: 2,
+        explanation: "[정답] ② 연공급\n\n🔑 핵심키워드: 근속연수, 호봉제, 연령 기준 자동 인상\n\n📝 해설\n연공급(호봉제)은 근속연수와 연령에 따라 임금이 상승하는 형태입니다. 장기근속 유도 효과가 있으나 인건비 부담과 성과 유인 부족 단점이 있습니다."
+      },
+      {
+        id: 2,
+        category: "Part 1. 경영·인사",
+        question: "[문제 02] 다음 신문 기사 지문에서 설명하는 문서 (가)에 대한 특징으로 가장 적합한 것은?\n\n[시사 경제 뉴스]\n(주)미래테크는 채용 공고와 함께 모집 직무의 수행 과업, 책임 범위, 필요한 도구 및 작업 환경을 명확히 정의한 (가) 직무기술서를 구직자들에게 공개했다. 이를 통해 구직자는 입사 후 수행할 실제 업무를 정확히 파악할 수 있게 되었다.",
+        options: [
+          "① 직무 수행자 개인이 갖추어야 할 학력, 자격증, 경력 등 인적 자격요건을 중심으로 기재한다.",
+          "② 특정 직무 자체의 내용, 담당 과업, 책임 및 수행 조건 등을 정밀하게 기재한다.",
+          "③ 직무의 상대적 가치를 평가하여 등급을 매기기 위한 목적으로만 작성되는 내부용 문서이다.",
+          "④ 조직 전체의 비전과 단기 매출 목표만을 추상적으로 나열한 문서이다.",
+          "⑤ 근로자와 회사 간의 월급 및 수당 지급 기준만을 정한 근로계약서이다."
+        ],
+        answer: 2,
+        explanation: "[정답] ② 특정 직무 자체의 내용, 담당 과업, 책임 및 수행 조건 등을 정밀하게 기재한다.\n\n🔑 핵심키워드: 직무 내용, 과업 범위, 책임과 환경\n\n📝 해설\n직무기술서는 특정 직무의 수행 과업과 책임, 환경 등을 기술한 문서입니다. 수행자의 자격요건을 주로 적은 것은 '직무명세서'입니다."
+      },
+      {
+        id: 3,
+        category: "Part 1. 경영·인사",
+        question: "[문제 03] 다음 사례에서 설명하는 근로자 계층을 가리키는 용어로 옳은 것은?\n\n자동차 생산 공장의 조립 라인 및 정비 현장에서 직접 제품 제작과 기계 설비 운용을 담당하는 육체노동 종사 근로자 그룹을 지칭하는 대표적인 시사 용어이다.",
+        options: ["① 화이트칼라", "② 골드칼라", "③ 블루칼라", "④ 핑크칼라", "⑤ 노매드"],
+        answer: 3,
+        explanation: "[정답] ③ 블루칼라\n\n🔑 핵심키워드: 생산 현장, 육체노동 종사자\n\n📝 해설\n생산직 및 정비 현장의 육체노동 근로자를 '블루칼라', 사무직 근로자를 '화이트칼라'라고 부릅니다."
+      },
+      {
+        id: 4,
+        category: "Part 1. 마케팅",
+        question: "[문제 04] 다음 마케팅 사례에 해당하는 매장 형태는?\n\n글로벌 패션 브랜드 B사는 신제품 라인업 출시를 기념하여 성수동의 임대 공간을 2주간 짧게 대여하였다. 브랜드 체험 공간과 한정판 굿즈 판매를 진행한 후 철수하는 이 단기 임시 매장 형태를 무엇이라 하는가?",
+        options: ["① 플래그십 스토어", "② 팝업스토어", "③ 옴니채널 매장", "④ 편집숍", "⑤ 안테나숍"],
+        answer: 2,
+        explanation: "[정답] ② 팝업스토어\n\n🔑 핵심키워드: 단기 임시 매장, 체험형 공간, 한정 운영\n\n📝 해설\n짧은 기간 동안 한시적으로 운영하고 철수하는 임시 매장을 팝업스토어(Pop-up Store)라 합니다."
+      },
+      {
+        id: 5,
+        category: "Part 1. 마케팅",
+        question: "[문제 05] 기업이 브랜드의 핵심 가치와 메시지를 소비자에게 명확하게 전달하기 위해 사용하는 짧은 구호나 문구를 뜻하는 용어는?",
+        options: ["① 슬로건", "② 브랜드 아이덴티티", "③ 로고타입", "④ 캐치프레이즈", "⑤ 징글"],
+        answer: 1,
+        explanation: "[정답] ① 슬로건\n\n🔑 핵심키워드: 브랜드 핵심 메시지, 짧은 구호\n\n📝 해설\n기업이나 브랜드가 소비자의 기억 속에 메시지를 각인시키기 위해 사용하는 대표적 문구를 슬로건(Slogan)이라 합니다."
+      },
+      {
+        id: 6,
+        category: "Part 1. 경영·전략",
+        question: "[문제 06] 다음 기술 경영 사례에 해당하는 기업 전략은?\n\n바이오 벤처 C사는 자체 개발한 신약 후보 물질 파이프라인의 특허권을 대형 제약사에 라이선스 아웃(License-out)하여 기술료 수익을 창출하였다. 이처럼 내부 기술을 외부에 공유 및 이전하여 수익을 만드는 전략은?",
+        options: ["① 인바운드 오픈이노베이션", "② 아웃바운드 오픈이노베이션", "③ 수직적 계열화", "④ 벤처 캐피탈", "⑤ 조인트 벤처"],
+        answer: 2,
+        explanation: "[정답] ② 아웃바운드 오픈이노베이션\n\n🔑 핵심키워드: 기술 외부 이전, 라이선스 아웃, 오픈 이노베이션\n\n📝 해설\n내부 자산이나 기술을 외부로 공개·이전하여 수익화하는 것을 아웃바운드 오픈이노베이션, 외부 기술을 내부로 끌어오는 것을 인바운드라 합니다."
+      },
+      {
+        id: 7,
+        category: "Part 1. IT·시사",
+        question: "[문제 07] 최근 생성형 AI 및 IT 시장에서 나타나는 다음 과장 광고 행위를 뜻하는 용어는?\n\n실제로는 조건문(If-Else) 기반의 단순 자동화 스크립트에 불과함에도, 마치 스스로 판단하고 자율적으로 과업을 수행하는 고급 AI 에이전트인 것처럼 과장하여 홍보하고 투자자를 모으는 행위는?",
+        options: ["① 그린워싱", "② 에이전트 워싱", "③ AI 딥페이크", "④ 프롬프트 튜닝", "⑤ 섀도 AI"],
+        answer: 2,
+        explanation: "[정답] ② 에이전트 워싱\n\n🔑 핵심키워드: AI 에이전트 과장 마케팅, 위장 자동화\n\n📝 해설\n실제 자율 지능 능력이 미흡한 알고리즘을 최첨단 AI 에이전트로 포장하는 과장 마케팅 행위를 '에이전트 워싱'이라 합니다."
+      },
+      {
+        id: 8,
+        category: "Part 1. 사회·고용",
+        question: "[문제 08] 다음 통계청 경제활동인구조사 결과에서 설명하는 시사 용어는?\n\n취업을 하지 않은 상태이며, 정규 교육 기관에 재학 중이지 않고 구직활동이나 취업 준비조차 하지 않은 채 단순 휴식을 취하고 있는 청년층을 뜻하는 용어는?",
+        options: ["① 니트족(NEET)", "② 캥거루족", "③ 쉬었음 청년", "④ 프러그족", "⑤ 타임푸어"],
+        answer: 3,
+        explanation: "[정답] ③ 쉬었음 청년\n\n🔑 핵심키워드: 비경제활동인구, 단순 휴식, 구직 미참여\n\n📝 해설\n통계청 조사상 별다른 이유 없이 구직이나 교육·훈련 없이 단순히 '쉬었음'으로 응답한 청년층을 의미합니다."
+      },
+      {
+        id: 9,
+        category: "Part 1. IT·기술",
+        question: "[문제 09] 최신 AI 소프트웨어 개발 환경에서 단일 대형언어모델(LLM)에 의존하지 않고, 여러 에이전트와 도구를 효과적으로 연동·오케스트레이션하여 시스템 성능을 최적화하는 개발 기술은?",
+        options: ["① 하네스 엔지니어링", "② 프롬프트 엔지니어링", "③ 파인 튜닝", "④ 임베딩", "⑤ 파이프라인 개발"],
+        answer: 1,
+        explanation: "[정답] ① 하네스 엔지니어링\n\n🔑 핵심키워드: AI 오케스트레이션, 에이전트 외부 통제, 환각 방지\n\n📝 해설\nLLM이 복잡한 작업을 결론까지 자율적이고 안정적으로 완수할 수 있도록 통제 및 연동 환경을 구축하는 기술입니다."
+      },
+      {
+        id: 10,
+        category: "Part 1. 산업·기술",
+        question: "[문제 10] 스마트 팩토리 및 물류 현장에서 별도의 안전 펜스(Safe Guard) 없이 사람과 동일한 작업 공간에서 밀접하게 협력하도록 설계된 산업용 로봇은?",
+        options: ["① 자율주행 로봇", "② 협동로봇(Cobot)", "③ 산업용 다축로봇", "④ 휴머노이드", "⑤ 서빙로봇"],
+        answer: 2,
+        explanation: "[정답] ② 협동로봇(Cobot)\n\n🔑 핵심키워드: 안전 펜스 없음, 인간과 공동 작업, Collaborative Robot\n\n📝 해설\n인간 작업자와 직접 상호작용하며 안전 센서를 탑재해 협업하는 로봇을 협동로봇(Cobot)이라 합니다."
+      },
+      {
+        id: 11,
+        category: "Part 1. 조직행동",
+        question: "[문제 11] 다음 사원 A씨의 태도에 나타난 조직몰입의 유형으로 가장 적절한 것은?\n\n사원 A씨는 더 좋은 조건의 이직 제안을 받았으나, \"자신을 채용해 주고 성장시켜 준 회사에 대한 도덕적 책임과 의무를 다해야 한다\"는 신념 때문에 회사에 계속 남아 근무하기로 결정하였다.",
+        options: ["① 감정적 몰입", "② 연속적 몰입", "③ 규범적 몰입", "④ 태도적 몰입", "⑤ 행동적 몰입"],
+        answer: 3,
+        explanation: "[정답] ③ 규범적 몰입\n\n🔑 핵심키워드: 도덕적 책임감, 의무감, 조직에 잔류\n\n📝 해설\n조직에 대한 도덕적·윤리적 의무감이나 신념으로 잔류하려는 상태를 규범적 몰입(Normative Commitment)이라 합니다."
+      },
+      {
+        id: 12,
+        category: "Part 1. 조직구조",
+        question: "[문제 12] 제품군이나 지역별로 독립된 운영 권한을 부여하고, 각 단위별로 매출과 이익에 대한 독자적 손익책임을 지게 하는 조직 구조 형태는?",
+        options: ["① 기능별 조직", "② 사업부 조직", "③ 매트릭스 조직", "④ 프로젝트 조직", "⑤ 팀 조직"],
+        answer: 2,
+        explanation: "[정답] ② 사업부 조직\n\n🔑 핵심키워드: 독자적 손익책임, 사업부 단위 분권화\n\n📝 해설\n제품, 고객, 지역 등을 기준으로 분권화되어 자율적 운영과 손익책임을 갖는 형태를 사업부 조직(Divisional Structure)이라 합니다."
+      },
+      {
+        id: 13,
+        category: "Part 1. 조직행동",
+        question: "[문제 13] 허즈버그(Herzberg)의 동기-위생 이론에 관한 설명 중 괄호 (A)에 들어갈 요인은?\n\n허즈버그는 직무 만족을 유발하는 동기 요인과 불만을 유발하는 ( A )을 구분하였다. 급여, 회사 정책, 작업 조건, 작업 환경 등은 ( A )에 속하며, 이것이 충족되지 않으면 불만이 발생하지만 충족된다고 해서 동기 부여가 크게 올라가지는 않는다.",
+        options: ["① 동기 요인", "② 위생 요인", "③ 자아실현 요인", "④ 성취 요인", "⑤ 유인 요인"],
+        answer: 2,
+        explanation: "[정답] ② 위생 요인\n\n🔑 핵심키워드: 직무 불만족 방지, 작업 조건, 회사 정책\n\n📝 해설\n위생 요인(Hygiene Factor)은 충족 시 불만족을 예방하지만 그 자체로 직접적인 동기 부여를 시키지는 못하는 근무 환경적 요소들입니다."
+      },
+      {
+        id: 14,
+        category: "Part 1. 마케팅·IT",
+        question: "[문제 14] 인터넷 이용자가 특정 웹사이트에 접속하려 할 때, 사용자의 동의 없이 강제로 지정된 다른 광고 사이트나 앱으로 연결되도록 만드는 불법·악성 마케팅 기법은?",
+        options: ["① 납치광고", "② 디스플레이 광고", "③ 리타게팅 광고", "④ 네이티브 광고", "⑤ 인플루언서 광고"],
+        answer: 1,
+        explanation: "[정답] ① 납치광고\n\n🔑 핵심키워드: 강제 리다이렉트, 무단 연결, 악성 마케팅\n\n📝 해설\n사용자의 원치 않는 트래픽을 강제로 지정 광고 페이지로 돌려버리는 기법을 납치광고(Hijack Ad)라 합니다."
+      },
+      {
+        id: 15,
+        category: "Part 1. 소비트렌드",
+        question: "[문제 15] 최근 현명한 소비자들이 단순 브랜드를 신뢰하기보다 원가 구조, 유통 마진, 제조 공정을 다각도로 분석하여 가격의 적정성을 해독(Decoding)한 후 구매를 결정하는 소비 트렌드는?",
+        options: ["① 체리피킹", "② 프라이스 디코딩", "③ 가성비 소비", "④ 그린 슈머", "⑤ 디노미네이션"],
+        answer: 2,
+        explanation: "[정답] ② 프라이스 디코딩\n\n🔑 핵심키워드: 원가 및 마진 분석, 가격 적정성 해독\n\n📝 해설\n가격표 뒤에 숨겨진 원가, 마진 구조를 정밀 분석(Decoding)하여 합리적인지 검증 후 소비하는 트렌드입니다."
+      },
+      {
+        id: 16,
+        category: "Part 1. 경영전략",
+        question: "[문제 16] SWOT 분석 모형에서 외부 환경에 존재하는 위협(Threats)을 회피하거나 방어하면서, 동시에 내부 조직의 약점(Weaknesses)을 극복하고자 할 때 수립하는 전략은?",
+        options: ["① SO 전략", "② ST 전략", "③ WO 전략", "④ WT 전략", "⑤ WT-SO 융합전략"],
+        answer: 4,
+        explanation: "[정답] ④ WT 전략\n\n🔑 핵심키워드: 약점(W) 보완 + 위협(T) 회피 (방어적 전략)\n\n📝 해설\n내부 약점을 줄이고 외부 위협을 회피하기 위해 사업 축소, 철수, 방어적 보완을 취하는 전략이 WT 전략입니다."
+      },
+      {
+        id: 17,
+        category: "Part 2. 거시·미시경제",
+        question: "[문제 17] 단기적으로 인플레이션율(물가상승률)이 상승하면 실업률이 하락하고, 반대로 인플레이션율이 하락하면 실업률이 상승하는 음(-)의 관계를 나타내는 경제학 곡선은?",
+        options: ["① 로렌츠곡선", "② 필립스곡선", "③ 라퍼곡선", "④ 엔겔곡선", "⑤ 무차별곡선"],
+        answer: 2,
+        explanation: "[정답] ② 필립스곡선\n\n🔑 핵심키워드: 인플레이션율과 실업률의 단기 상충(음의) 관계\n\n📝 해설\n필립스곡선(Phillips Curve)은 단기적으로 물가상승률과 실업률 사이에 상반된(역의) 관계가 존재함을 보여줍니다."
+      },
+      {
+        id: 18,
+        category: "Part 2. 경제원론",
+        question: "[문제 18] 이미 지출되어 어떠한 선택을 하더라도 다시 회수할 수 없는 비용으로, 매몰비용의 오류를 피하기 위해 의사결정 시 고려 대상에서 제외해야 하는 비용은?",
+        options: ["① 기회비용", "② 매몰비용", "③ 한계비용", "④ 고정비용", "⑤ 변동비용"],
+        answer: 2,
+        explanation: "[정답] ② 매몰비용\n\n🔑 핵심키워드: 회수 불가능한 비용, 의사결정 시 무시\n\n📝 해설\n이미 집행되어 회수할 수 없으므로 새로운 합리적 결정 시 고려에서 배제해야 하는 비용을 매몰비용(Sunk Cost)이라 합니다."
+      },
+      {
+        id: 19,
+        category: "Part 2. 소비자이론",
+        question: "[문제 19] 소비자가 어떤 제품의 제시 가격을 보고 \"이 제품이 비싼가, 저렴한가?\"를 판단할 때 마음속에서 비교 기준점으로 사용하는 가격은?",
+        options: ["① 유인가격", "② 한계가격", "③ 준거가격", "④ 유효가격", "⑤ 유동가격"],
+        answer: 3,
+        explanation: "[정답] ③ 준거가격\n\n🔑 핵심키워드: 마음속 비교 기준점 가격, Reference Price\n\n📝 해설\n소비자가 가격을 판단할 때 기준(내적/외적)으로 삼는 가격을 준거가격(Reference Price)이라 합니다."
+      },
+      {
+        id: 20,
+        category: "Part 2. 소비자이론",
+        question: "[문제 20] 다른 많은 사람들이 특정 제품을 구매하여 널리 사용하기 시작하면 희소성이 떨어졌다고 판단하여 오히려 구매를 꺼리거나 상류층 타깃 소비를 중단하는 소비자 행동 현상은?",
+        options: ["① 밴드웨건 효과", "② 스놉 효과", "③ 베블런 효과", "④ 록인 효과", "⑤ 앵커링 효과"],
+        answer: 2,
+        explanation: "[정답] ② 스놉 효과\n\n🔑 핵심키워드: 백로 효과, 희소성 감소 시 구매 중단, 차별화 소비\n\n📝 해설\n남들이 많이 사면 거부감을 느끼고 자신의 차별성을 고수하려는 소비자 심리를 스놉 효과(Snob Effect, 백로 효과)라 합니다."
+      },
+      {
+        id: 21,
+        category: "Part 2. 미시경제",
+        question: "[문제 21] 풍작으로 인해 농산물 생산량이 크게 증가했으나, 농산물 수요의 가격탄력성이 비탄력적이어서 가격이 급락함에 따라 농가 총수입이 오히려 감소하는 현상은?",
+        options: ["① 절약의 역설", "② 풍년의 역설", "③ 기펜재 현상", "④ 파레토 비효율", "⑤ 거미집 이론"],
+        answer: 2,
+        explanation: "[정답] ② 풍년의 역설\n\n🔑 핵심키워드: 농산물 풍작, 비탄력적 수요, 농가 수입 감소\n\n📝 해설\n농산물은 수요가 비탄력적이어서 풍년이 들면 가격 급락 폭이 수량 증가 폭보다 커 수입이 감소하는 풍년의 역설이 발생합니다."
+      },
+      {
+        id: 22,
+        category: "Part 2. 시장실패",
+        question: "[문제 22] 한 사람의 소비가 다른 사람의 소비를 제한하는 '경합성'은 존재하지만, 특정 사람의 접근이나 이용을 막을 수 없는 '비배제성'을 가져 고갈 위험이 있는 자원은?",
+        options: ["① 사적재", "② 공공재", "③ 공유자원", "④ 클럽재", "⑤ 준공공재"],
+        answer: 3,
+        explanation: "[정답] ③ 공유자원\n\n🔑 핵심키워드: 경합성 O, 비배제성 O, 공유지의 비극\n\n📝 해설\n누구나 이용할 수 있으나(비배제성) 한 사람의 이용이 타인의 몫을 줄이는(경합성) 자원을 공유자원이라 합니다."
+      },
+      {
+        id: 23,
+        category: "Part 2. 정보경제학",
+        question: "[문제 23] 계약 체결 전(사전적)에 정보의 비대칭성으로 인하여 불리한 특성을 가진 정보 열위자가 바람직하지 않은 거래 상대를 선택하게 되는 현상은?",
+        options: ["① 도덕적 해이", "② 역선택", "③ 주인-대리인 문제", "④ 무임승차 현상", "⑤ 신호보내기 오류"],
+        answer: 2,
+        explanation: "[정답] ② 역선택\n\n🔑 핵심키워드: 거래 전(사전적) 정보 비대칭, 바람직하지 않은 선택\n\n📝 해설\n계약 체결 이전에 감춰진 특성 때문에 발생하는 불리한 선택 현상을 역선택(Adverse Selection)이라 합니다."
+      },
+      {
+        id: 24,
+        category: "Part 2. 시장구조",
+        question: "[문제 24] 시장에 소수의 대기업 공급자만 존재하여 상호 의존적인 가격 및 생산량 결정 행위를 보이는 시장 구조는?",
+        options: ["① 완전경쟁시장", "② 독점적 경쟁시장", "③ 과점시장", "④ 독점시장", "⑤ 수요독점시장"],
+        answer: 3,
+        explanation: "[정답] ③ 과점시장\n\n🔑 핵심키워드: 소수의 공급자, 상호 의존성, 짬짜미/담합 위험\n\n📝 해설\n소수의 대기업이 시장을 점유하고 서로의 반응을 고려하여 가격이나 생산량을 설정하는 형태를 과점시장(Oligopoly)이라 합니다."
+      },
+      {
+        id: 25,
+        category: "Part 2. 노동경제학",
+        question: "[문제 25] 노동자가 더 나은 직장으로 이직하거나 새로운 직업을 탐색하는 과정에서 일시적으로 발생하는 실업 유형은?",
+        options: ["① 경기적 실업", "② 구조적 실업", "③ 마찰적 실업", "④ 계절적 실업", "⑤ 자발적 실업"],
+        answer: 3,
+        explanation: "[정답] ③ 마찰적 실업\n\n🔑 핵심키워드: 탐색적 실업, 이직 및 직업 탐색 과정의 일시적 실업\n\n📝 해설\n새로운 직장을 찾는 탐색 과정에서 정보 불완전성으로 인해 발생하는 일시적인 실업을 마찰적 실업(Frictional Unemployment)이라 합니다."
+      },
+      {
+        id: 26,
+        category: "Part 2. 화폐금융",
+        question: "[문제 26] 물물교환 시 발생하는 '욕망의 이중적 일치' 문제를 해결하여 거래 비용을 획기적으로 낮춰주는 화폐의 가장 대표적인 기본 기능은?",
+        options: ["① 가치 저장 수단", "② 교환의 매개", "③ 가치 척도", "④ 회계의 단위", "⑤ 이월 지불 수단"],
+        answer: 2,
+        explanation: "[정답] ② 교환의 매개\n\n🔑 핵심키워드: 욕망의 이중적 일치 해결, 거래 매개체\n\n📝 해설\n화폐는 상품 거래 과정에서 매개체 역할을 함으로써 욕망의 이중적 일치가 필요 없도록 도와줍니다."
+      },
+      {
+        id: 27,
+        category: "Part 2. 시장실패",
+        question: "[문제 27] 공장 폐수 배출이나 환경오염처럼 한 경제주체의 생산 활동이 제3자에게 피해를 주면서도 이에 대해 적절한 보상을 지급하지 않아 사회적 비용을 더 크게 유발하는 현상은?",
+        options: ["① 긍정적 외부효과", "② 부정적 외부효과", "③ 정보의 비대칭성", "④ 자연독점", "⑤ 공공재의 부족"],
+        answer: 2,
+        explanation: "[정답] ② 부정적 외부효과\n\n🔑 핵심키워드: 제3자에게 제해 전달, 보상 미지급, 사회적 비용 과다\n\n📝 해설\n시장 거래를 거치지 않고 타인에게 의도치 않은 손해를 입히며 대가를 지불하지 않는 현상을 부정적 외부효과(외부불경제)라 합니다."
+      },
+      {
+        id: 28,
+        category: "Part 3. 거시경제",
+        question: "[문제 28] 인플레이션 시 화폐의 구매력이 떨어지기 때문에 현금 보유를 줄이고 자금을 자주 예치·인출하고자 은행을 수시로 오가는 과정에서 발생하는 사회적 비용은?",
+        options: ["① 메뉴비용", "② 구두창비용", "③ 인플레이션 조세", "④ 거래비용", "⑤ 기회비용"],
+        answer: 2,
+        explanation: "[정답] ② 구두창비용\n\n🔑 핵심키워드: 현금 보유 축소, 은행 방문 빈도 증가, Shoe-leather Cost\n\n📝 해설\n인플레이션에 대응해 현금 보유를 줄이고 자금을 자주 인출하기 위해 은행을 이동하면서 소모되는 시간과 노력을 '구두창비용'이라 합니다."
+      },
+      {
+        id: 29,
+        category: "Part 3. 통화정책",
+        question: "[문제 29] 통화정책을 결정할 때 인플레이션 방지와 물가 안정을 최우선 과제로 삼아 금리 인상 및 긴축 정책을 선호하는 성향의 중앙은행 인사를 가리키는 용어는?",
+        options: ["① 비둘기파", "② 매파", "③ 올빼미파", "④ 중립파", "⑤ 늑대파"],
+        answer: 2,
+        explanation: "[정답] ② 매파\n\n🔑 핵심키워드: 물가 안정 중시, 금리 인상 선호, 긴축 기조 (Hawks)\n\n📝 해설\n물가안정과 긴축 통화정책을 선호하는 집단을 매파(Hawks), 경기 부양과 금리 인하를 선호하는 집단을 비둘기파(Doves)라 부릅니다."
+      },
+      {
+        id: 30,
+        category: "Part 3. 통화정책",
+        question: "[문제 30] 중앙은행이 금통위 회의에서 기준금리는 종전대로 동결하였으나, 향후 인플레이션 재발 가능성을 경고하며 금리 인상 가능성을 높게 열어두는 통화정책 기조는?",
+        options: ["① 매파적 동결", "② 비둘기파적 동결", "③ 빅스텝", "④ 베이비스텝", "⑤ 포워드 가이던스"],
+        answer: 1,
+        explanation: "[정답] ① 매파적 동결\n\n🔑 핵심키워드: 금리 동결 + 인상 가능성 및 긴축 메시지 경고\n\n📝 해설\n기준금리는 올리지 않고 유지하지만, 시장에 긴축 경계감을 늦추지 않도록 강력한 매파적 뉘앙스를 전달하는 행보입니다."
+      },
+      {
+        id: 31,
+        category: "Part 3. 거시경제",
+        question: "[문제 31] 한 국가 국민의 평균적인 경제적 생활 수준 및 소득 규모를 국제 비교할 때 가장 보편적으로 활용되는 경제 지표는?",
+        options: ["① 명목 GDP", "② 1인당 GDP", "③ GNI", "④ 국민총생산", "⑤ GDP 디플레이터"],
+        answer: 2,
+        explanation: "[정답] ② 1인당 GDP\n\n🔑 핵심키워드: 개인 평균 생활 수준, 국제 비교 표준 지표\n\n📝 해설\n국가 전체 규모가 아닌 개인의 실질적 평균 생활 수준과 소득 능력을 국가 간 비교할 때는 1인당 GDP(Per Capita GDP)를 가장 흔히 활용합니다."
+      },
+      {
+        id: 32,
+        category: "Part 3. 복지·소득",
+        question: "[문제 32] 인간다운 최소한의 건강과 생활을 유지하는 데 절대적으로 필요한 최저 소득 수준을 나타내는 경계선은?",
+        options: ["① 지니계수", "② 10분위 배율", "③ 빈곤선", "④ 로렌츠선", "⑤ 최저임금선"],
+        answer: 3,
+        explanation: "[정답] ③ 빈곤선\n\n🔑 핵심키워드: 최소한의 생계 유지 소득 경계, Poverty Line\n\n📝 해설\n인간다운 최저 생활에 필요한 비용을 기준으로 설정한 소득 경계선을 빈곤선(Poverty Line)이라 합니다."
+      },
+      {
+        id: 33,
+        category: "Part 3. 거시경제",
+        question: "[문제 33] 시중 명목이자율이 실질이자율에 기대인플레이션율을 더한 값으로 결정된다는 피셔 방정식의 기본 이론을 뜻하는 용어는?",
+        options: ["① 피셔효과", "② 픽스효과", "③ 케인스 효과", "④ 피구 효과", "⑤ 자산효과"],
+        answer: 1,
+        explanation: "[정답] ① 피셔효과\n\n🔑 핵심키워드: 명목이자율 = 실질이자율 + 기대인플레이션율\n\n📝 해설\n기대 인플레이션율의 상승이 명목이자율을 동일한 폭만큼 상승시킨다는 관계를 설명한 이론을 피셔효과(Fisher Effect)라 합니다."
+      },
+      {
+        id: 34,
+        category: "Part 3. 재정정책",
+        question: "[문제 34] 정부가 확장적 재정정책(국채 발행 등)을 추진하여 시중 자금을 흡수함에 따라 시장 금리가 상승하고, 이로 인해 민간 기업의 투자 지출을 위축시키는 현상은?",
+        options: ["① 승수효과", "② 구축효과", "③ 낙수효과", "④ 분수효과", "⑤ 래그 효과"],
+        answer: 2,
+        explanation: "[정답] ② 구축효과\n\n🔑 핵심키워드: 정부 지출 확대 → 금리 상승 → 민간 투자 위축\n\n📝 해설\n정부의 재정지출 확대가 이자율을 상승시켜 민간의 투자와 소비를 몰아내는(Crowding-out) 현상입니다."
+      },
+      {
+        id: 35,
+        category: "Part 3. 거시경제",
+        question: "[문제 35] 명목 GDP를 실질 GDP로 나눈 값에 100을 곱하여 구하며, 국가 경제 전체의 물가 수준을 종합적으로 나타내는 물가지수는?",
+        options: ["① 소비자물가지수(CPI)", "② 생산자물가지수(PPI)", "③ GDP 디플레이터", "④ 생활물가지수", "⑤ 근원물가지수"],
+        answer: 3,
+        explanation: "[정답] ③ GDP 디플레이터\n\n🔑 핵심키워드: (명목 GDP / 실질 GDP) × 100, 종합 물가지수\n\n📝 해설\n국내에서 생산된 모든 재화와 서비스의 가격 변동을 종합 반영하는 가장 포괄적인 물가지수입니다."
+      },
+      {
+        id: 36,
+        category: "Part 4. 금융·증권",
+        question: "[문제 36] 주식시장에서 코스피/코스닥 지수가 급격히 폭락할 때 시장 충격을 완화하기 위해 모든 주식 거래 및 파생상품 매매를 일정 시간 동안 전면 중단하는 제도는?",
+        options: ["① 사이드카", "② 서킷브레이커", "③ 공매도 금지", "④ 변동성 완화장치(VI)", "⑤ 가격제한폭"],
+        answer: 2,
+        explanation: "[정답] ② 서킷브레이커\n\n🔑 핵심키워드: 주가 폭락 시 매매 전면 중단, Circuit Breakers\n\n📝 해설\n시장 전체의 급격한 폭락 시 냉각 시간을 제공하기 위해 주식 시장 거래 전체를 일시 정지시키는 안정화 제도입니다."
+      },
+      {
+        id: 37,
+        category: "Part 4. 금융·증권",
+        question: "[문제 37] 주가지수 유동성 증대를 위해 1주당 액면가격을 5,000원에서 500원으로 낮추어 총 발행 주식 수를 10배로 늘리는 주식 발행 제도는?",
+        options: ["① 액면분할", "② 액면병합", "③ 무상감자", "④ 주식배당", "⑤ 자사주 매입"],
+        answer: 1,
+        explanation: "[정답] ① 액면분할\n\n🔑 핵심키워드: 주당 액면가 감소, 총 발행 주식 수 증가, 유동성 확대\n\n📝 해설\n기존 주식의 액면가를 일정 비율로 분할하여 주식 수를 늘리고 소액 투자자의 접근성을 높이는 방식입니다."
+      },
+      {
+        id: 38,
+        category: "Part 4. 국제금융",
+        question: "[문제 38] 해외 외국 기업이나 다국적 기관이 중국 본토 금융시장에서 위안화(CNY) 단위로 발행하는 채권을 부르는 명칭은?",
+        options: ["① 딤섬본드", "② 판다본드", "③ 아리랑본드", "④ 야무라이본드", "⑤ 양키본드"],
+        answer: 2,
+        explanation: "[정답] ② 판다본드\n\n🔑 핵심키워드: 중국 본토 발행, 위안화 표시 채권\n\n📝 해설\n외국 기관이 중국 역내(본토) 시장에서 위안화로 발행하는 채권을 판다본드(Panda Bond)라 부릅니다. (홍콩 발행은 딤섬본드)"
+      },
+      {
+        id: 39,
+        category: "Part 4. 재무·투자",
+        question: "[문제 39] 타인 자본(부채)을 차입하여 자기자본 대비 자산 투자 규모를 늘림으로써 자기자본 이익률을 극대화하는 투자 효과는?",
+        options: ["① 록인 효과", "② 레버리지 효과", "③ 윈도우 드레싱", "④ 네트워크 효과", "⑤ 스필오버 효과"],
+        answer: 2,
+        explanation: "[정답] ② 레버리지 효과\n\n🔑 핵심키워드: 지렛대 효과, 부채 활용 자기자본이익률 극대화\n\n📝 해설\n타인 자본을 지렛대 삼아 적은 자기자본으로 큰 수익률을 올리는 자본투자 기법을 레버리지 효과(Leverage Effect)라 합니다."
+      },
+      {
+        id: 40,
+        category: "Part 4. 증권심리",
+        question: "[문제 40] 주가가 고점(Peak)을 찍고 하향 조정될 것에 대한 공포감 때문에 주식 매수를 주저하거나 보유 주식을 조기에 매도해 버리는 증시 심리 현상은?",
+        options: ["① FOMO", "② FOPO", "③ 디커플링", "④ 뱅크런", "⑤ 패닉바잉"],
+        answer: 2,
+        explanation: "[정답] ② FOPO\n\n🔑 핵심키워드: Fear of Playing Over, 고점 조속 이탈 공포\n\n📝 해설\n소외 공포인 FOMO(Fear of Missing Out)와 반대로 고점 낙하 및 손실 공포로 주저하거나 즉시 매도하는 심리를 FOPO라 합니다."
+      },
+      {
+        id: 41,
+        category: "Part 4. 금융위기",
+        question: "[문제 41] 금융기관의 부실 소문이나 신용 위기 우려로 인해 대규모 예금자들이 단기간에 한꺼번에 예금을 인출해 가는 금융 불안 사태는?",
+        options: ["① 뱅크런", "② 패닉셀", "③ 신용대란", "④ 디폴트", "⑤ 삭스런"],
+        answer: 1,
+        explanation: "[정답] ① 뱅크런\n\n🔑 핵심키워드: 대규모 예금 즉시 인출, 금융기관 지급불능 위험\n\n📝 해설\n은행 신용도 상실 시 예금 인출이 일시에 몰리는 대규모 예금 이탈 사태를 뱅크런(Bank Run)이라 합니다."
+      },
+      {
+        id: 42,
+        category: "Part 4. 투자론",
+        question: "[문제 42] 전쟁, 경기 변동, 금리 인상 등 시장 전체 시스템에 영향을 미치는 위험으로, 아무리 다각화된 분산투자를 하더라도 제거할 수 없는 위험은?",
+        options: ["① 비체계적 위험", "② 체계적 위험", "③ 신용 위험", "④ 유동성 위험", "⑤ 부도 위험"],
+        answer: 2,
+        explanation: "[정답] ② 체계적 위험\n\n🔑 핵심키워드: 시장 전체 위험, 분산투자 불가능한 위험\n\n📝 해설\n시장 전체 충격에 의한 위험으로 포트폴리오 분산투자로 피할 수 없는 위험을 체계적 위험(Systematic Risk)이라 합니다."
+      },
+      {
+        id: 43,
+        category: "Part 5. 실물경제",
+        question: "[문제 43] 파생상품 및 금융 자산 거래가 아닌 실물 재화의 생산, 유통, 서비스 및 고용이 이루어지는 경제의 실체 영역을 뜻하는 용어는?",
+        options: ["① 리얼이코노미", "② 버추얼이코노미", "③ 파이낸셜이코노미", "④ 셰어링이코노미", "⑤ 긱이코노미"],
+        answer: 1,
+        explanation: "[정답] ① 리얼이코노미\n\n🔑 핵심키워드: 실물경제, 실체 재화 생산 및 소비 영역\n\n📝 해설\n금융시장 자산과 대비되는 실제 재화, 생산, 고용, 소비가 일어나는 영역을 리얼 이코노미(Real Economy)라 부릅니다."
+      },
+      {
+        id: 44,
+        category: "Part 5. 경제지표",
+        question: "[문제 44] 부모의 소득 계층이 자녀의 소득 수준에 미치는 영향력을 수치화한 지표로, 이 값이 높을수록 부의 세습이 강하고 사회적 계층 이동성이 낮음을 뜻하는 지표는?",
+        options: ["① 팔마비율", "② 소득백분위 기울기", "③ 지니계수", "④ 5분위 배율", "⑤ 슈바베 계수"],
+        answer: 2,
+        explanation: "[정답] ② 소득백분위 기울기\n\n🔑 핵심키워드: 부모-자녀 소득 상관관계, 계층 이동성 수치화\n\n📝 해설\n부모 소득 백분위와 자녀 소득 백분위 간의 관계 기울기로, 클수록 계층 이동이 둔화되고 세습성이 높아짐을 나타냅니다."
+      },
+      {
+        id: 45,
+        category: "Part 5. 재무·회계",
+        question: "[문제 45] 기업이 사업 자금 조달을 위해 주주들을 대상으로 신주를 발행하고 자금을 실제 입금받는 회계상 자본 증자 행위는?",
+        options: ["① 무상증자", "② 유상증자", "③ 주식상장", "④ 액면분할", "⑤ 사채 발행"],
+        answer: 2,
+        explanation: "[정답] ② 유상증자\n\n🔑 핵심키워드: 신주 발행, 실질 자금 유입, 자본금 증대\n\n📝 해설\n주식을 새로 발행하여 투자 대금을 받고 자본금을 올리는 형태를 유상증자라 합니다."
+      },
+      {
+        id: 46,
+        category: "Part 5. 재무분석",
+        question: "[문제 46] 당기순이익을 자기자본으로 나누어 산출하며, 기업이 주주들의 자기자본을 활용하여 얼마나 효율적으로 수익을 내었는지 측정하는 수익성 지표는?",
+        options: ["① ROA", "② ROE", "③ PER", "④ PBR", "⑤ EV/EBITDA"],
+        answer: 2,
+        explanation: "[정답] ② ROE\n\n🔑 핵심키워드: (당기순이익 / 자기자본), Return on Equity\n\n📝 해설\n주주 자본을 대비해 얼마나 효율적으로 이익을 창출했는가 측정하는 대표 지표인 ROE(자기자본이익률)입니다."
+      },
+      {
+        id: 47,
+        category: "Part 5. 회계원리",
+        question: "[문제 47] 상품이나 제품을 외상으로 판매하고 향후 구매자로부터 대금을 청구하여 수령할 수 있는 회계상의 유동자산 계정 과목은?",
+        options: ["① 외상매입금", "② 매출채권", "③ 지급어음", "④ 미지급금", "⑤ 선수금"],
+        answer: 2,
+        explanation: "[정답] ② 매출채권\n\n🔑 핵심키워드: 외상 매출금, 받은어음, 영업 유동자산\n\n📝 해설\n주된 영업 활동에서 발생한 외상 매출 자금을 회계상 '매출채권' 자산 계정으로 분류합니다."
+      },
+      {
+        id: 48,
+        category: "Part 5. 외부감사",
+        question: "[문제 48] 외부감사인이 감사를 진행하는 과정에서 감사 범위 제한이나 기업의 중요 자료 미제출 등으로 재무제표 전반에 대해 입증할 수 없을 때 제시하는 최하위 감사의견은?",
+        options: ["① 적정의견", "② 한정의견", "③ 부적정의견", "④ 의견거절", "⑤ 감사유예"],
+        answer: 4,
+        explanation: "[정답] ④ 의견거절\n\n🔑 핵심키워드: 감사 범위 제한, 입증 불가, 최하위 감사의견\n\n📝 해설\n증거 미비나 자격 판단 불가 등으로 재무 정보의 신뢰도를 판단할 수 없을 때 표명하는 최하위 의견입니다."
+      },
+      {
+        id: 49,
+        category: "Part 5. 기업경영",
+        question: "[문제 49] 기업의 지속 가능한 경영을 평가할 때 재무적 성과 외에 환경(Environment), 사회적 책임(Social), 지배구조(Governance)를 종합 고려하는 지표는?",
+        options: ["① ESG", "② CSR", "③ CSV", "④ GRI", "⑤ RE100"],
+        answer: 1,
+        explanation: "[정답] ① ESG\n\n🔑 핵심키워드: Environment, Social, Governance, 비재무 핵심 가치\n\n📝 해설\n기업의 친환경, 사회적 책임, 투명 지배구조 등 비재무적 요소를 정밀 평가하는 지표입니다."
+      },
+      {
+        id: 50,
+        category: "Part 5. 차세대 경제",
+        question: "[문제 50] 블록체인 네트워크와 멀티 에이전트 생태계 내에서 유저 및 참가자들에게 토큰 형태의 자원 보상 체계를 결합하여 운영하는 새로운 경제 시스템은?",
+        options: ["① 토큰 경제", "② 디지털 이코노미", "③ 메타버스 이코노미", "④ 긱 경제", "⑤ 공유 경제"],
+        answer: 1,
+        explanation: "[정답] ① 토큰 경제\n\n🔑 핵심키워드: 블록체인 보상 체계, 토크노믹스(Tokenomics)\n\n📝 해설\n네트워크 참여 유인과 가치 보상을 암호화된 토큰 형태로 설계하여 운용하는 경제 시스템을 의미합니다."
+      }
+    ];
+
+    let currentQuestions = [...originalQuestions];
+    let currentIndex = 0;
+    let userAnswers = {};
+    let isWrongOnlyMode = false;
+
+    function initApp() {
+      document.getElementById('totalIndex').innerText = currentQuestions.length;
+      renderQuestion();
+      renderOMR();
+      updateScoreSummary();
+    }
+
+    function renderQuestion() {
+      if (currentQuestions.length === 0) return;
+      const q = currentQuestions[currentIndex];
+
+      document.getElementById('categoryBadge').innerText = q.category;
+      document.getElementById('currentIndex').innerText = currentIndex + 1;
+      document.getElementById('totalIndex').innerText = currentQuestions.length;
+
+      document.getElementById('questionTitle').innerText = q.question;
+
+      const optionsList = document.getElementById('optionsList');
+      optionsList.innerHTML = '';
+
+      const selectedOpt = userAnswers[q.id];
+
+      q.options.forEach((optText, idx) => {
+        const optNum = idx + 1;
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = optText;
+
+        if (selectedOpt !== undefined) {
+          if (optNum === q.answer) {
+            btn.classList.add('correct');
+          } else if (optNum === selectedOpt) {
+            btn.classList.add('wrong');
+          }
+          btn.disabled = true;
+        } else {
+          btn.onclick = () => selectOption(q.id, optNum);
+        }
+
+        optionsList.appendChild(btn);
+      });
+
+      const expBox = document.getElementById('explanationBox');
+      if (selectedOpt !== undefined) {
+        expBox.style.display = 'block';
+        expBox.innerText = q.explanation;
+      } else {
+        expBox.style.display = 'none';
+        expBox.innerText = '';
+      }
+
+      document.getElementById('prevBtn').disabled = (currentIndex === 0);
+      document.getElementById('nextBtn').disabled = (currentIndex === currentQuestions.length - 1);
+
+      updateOMRActive();
+    }
+
+    function selectOption(qId, optNum) {
+      userAnswers[qId] = optNum;
+      renderQuestion();
+      renderOMR();
+      updateScoreSummary();
+    }
+
+    function prevQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    }
+
+    function nextQuestion() {
+      if (currentIndex < currentQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      }
+    }
+
+    function renderOMR() {
+      const omrGrid = document.getElementById('omrGrid');
+      omrGrid.innerHTML = '';
+
+      currentQuestions.forEach((q, idx) => {
+        const item = document.createElement('div');
+        item.className = 'omr-item';
+        if (idx === currentIndex) item.classList.add('active');
+
+        const userAns = userAnswers[q.id];
+        let statusText = '-';
+        let statusClass = 'status-none';
+
+        if (userAns !== undefined) {
+          if (userAns === q.answer) {
+            statusText = '정답';
+            statusClass = 'status-correct';
+          } else {
+            statusText = '오답';
+            statusClass = 'status-wrong';
+          }
+        }
+
+        item.innerHTML = `
+          <span>Q${String(q.id).padStart(2, '0')}</span>
+          <span class="status-badge ${statusClass}">${statusText}</span>
+        `;
+
+        item.onclick = () => {
+          currentIndex = idx;
+          renderQuestion();
+        };
+
+        omrGrid.appendChild(item);
+      });
+    }
+
+    function updateOMRActive() {
+      const items = document.querySelectorAll('.omr-item');
+      items.forEach((item, idx) => {
+        if (idx === currentIndex) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    }
+
+    function updateScoreSummary() {
+      let correctCount = 0;
+
+      originalQuestions.forEach(q => {
+        if (userAnswers[q.id] !== undefined) {
+          if (userAnswers[q.id] === q.answer) correctCount++;
+        }
+      });
+
+      document.getElementById('scoreSummary').innerText = `맞힘: ${correctCount} / ${originalQuestions.length}`;
+    }
+
+    function resetAndShuffle() {
+      if (confirm('문제를 초기화하고 순서를 섞으시겠습니까?')) {
+        isWrongOnlyMode = false;
+        userAnswers = {};
+        currentQuestions = [...originalQuestions].sort(() => Math.random() - 0.5);
+        currentIndex = 0;
+        
+        document.getElementById('modeBadge').style.display = 'none';
+        document.getElementById('wrongOnlyBtn').style.display = 'inline-block';
+        document.getElementById('showAllBtn').style.display = 'none';
+        
+        initApp();
+      }
+    }
+
+    function filterWrongQuestions() {
+      const wrongList = originalQuestions.filter(q => userAnswers[q.id] !== undefined && userAnswers[q.id] !== q.answer);
+
+      if (wrongList.length === 0) {
+        alert('틀린 문제가 없습니다! (풀지 않은 문제가 있거나 모두 정답입니다)');
+        return;
+      }
+
+      isWrongOnlyMode = true;
+      currentQuestions = wrongList;
+      currentIndex = 0;
+
+      document.getElementById('modeBadge').innerText = `오답 복습 (${wrongList.length}개)`;
+      document.getElementById('modeBadge').style.display = 'inline-block';
+      document.getElementById('wrongOnlyBtn').style.display = 'none';
+      document.getElementById('showAllBtn').style.display = 'inline-block';
+
+      initApp();
+    }
+
+    function showAllQuestions() {
+      isWrongOnlyMode = false;
+      currentQuestions = [...originalQuestions];
+      currentIndex = 0;
+
+      document.getElementById('modeBadge').style.display = 'none';
+      document.getElementById('wrongOnlyBtn').style.display = 'inline-block';
+      document.getElementById('showAllBtn').style.display = 'none';
+
+      initApp();
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.code === 'Space' || e.key === ' ') {
+        e.preventDefault();
+        nextQuestion();
+      }
+    });
+
+    window.onload = initApp;
+  </script>
+</body>
+</html>
